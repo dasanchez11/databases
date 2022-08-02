@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState,useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getCurrentUser, onAuthStateChangeListener, signOutUserFirebase } from '../Firebase/firebase.auth';
+
 
 export const AuthContext = createContext({
   authState: null,
@@ -15,45 +15,44 @@ export const AuthContext = createContext({
 
 const AuthProvider = ({ children }) => {
   const navigate = useNavigate()
+  const userInfo = localStorage.getItem('userInfo');
+  const expiresAt = localStorage.getItem('expiresAt');
+
   const [loading,setLoading] = useState(false)
-  const [authState, setAuthState] = useState({clientInfo:{}});
+  const [authState, setAuthState] = useState({
+    token:null,
+    expiresAt,
+    userInfo: userInfo ? JSON.parse(userInfo) : {}
+  });
 
-  useEffect(()=>{
-    const unsubscribe = onAuthStateChangeListener(async(user)=>{
-      setLoading(true)
-      if(user){
-        const clientInfo = await getCurrentUser(user.uid)
-        setAuthState({clientInfo})
-      }
-      setLoading(false)
-    })
+  
+  const setAuthInfo = ({ token, userInfo, expiresAt }) => {
+    localStorage.setItem('userInfo', JSON.stringify(userInfo))
+    localStorage.setItem('expiresAt', expiresAt)
 
-    return unsubscribe
-  },[])
-
-
-  const setAuthInfo = ({ clientInfo }) => {
-    setAuthState({ clientInfo })
+    setAuthState({ token, userInfo, expiresAt })
   }
 
   const isAuthenticated = useCallback(() =>{
-    return Object.keys(authState.clientInfo).length === 0 ? false : true
+    if(!authState.expiresAt){
+      return false
+    }
+    return new Date().getTime()/1000 < authState.expiresAt
   },[authState])
 
   const isAdmin = useCallback(() =>{
     return authState.clientInfo.clientRole === 'admin'
   },[authState])
 
-  const logout = async() =>{
-    try {
-      await signOutUserFirebase()
-      setAuthState({
-        clientInfo:{},
-      })
-      navigate('/')
-    } catch (error) {
-      console.log(error)
-    }
+  const logout = () =>{
+    localStorage.removeItem('userInfo')
+    localStorage.removeItem('expiresAt')
+    setAuthState({
+      token:null,
+      userInfo:{},
+      expiresAt:null
+    })
+    navigate('/')
   }
 
 

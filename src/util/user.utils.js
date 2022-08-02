@@ -3,9 +3,9 @@ import { createUserDocumentFromAuth,loginUserFromAuth } from "../Firebase/fireba
 export const signUpUser = async(credentialValues,setLoading,setSignUpSuccess,setSignUpError,setRedirectOnSignup,publicFetch) =>{
     try {
         setLoading(true)
-        // const { data } = await publicFetch.put('signup', credentialValues)
-        await createUserDocumentFromAuth(credentialValues)
-        setSignUpSuccess('Sign Up success')
+        const { data } = await publicFetch.put('signup', credentialValues)
+        authContext.setAuthState(data)
+        setSignUpSuccess(data.message)
         setLoading(false)
         setSignUpError('')
         setTimeout(() => {
@@ -13,7 +13,8 @@ export const signUpUser = async(credentialValues,setLoading,setSignUpSuccess,set
         }, 700)
     } catch (error) {
         setLoading(false)
-        setSignUpError(error.message)
+        const { message } = error.response.data
+        setSignUpError(message)
         setSignUpSuccess('')
     }
 }
