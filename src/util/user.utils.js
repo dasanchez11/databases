@@ -1,6 +1,5 @@
-import { createUserDocumentFromAuth,loginUserFromAuth } from "../Firebase/firebase.utils"
 
-export const signUpUser = async(credentialValues,setLoading,setSignUpSuccess,setSignUpError,setRedirectOnSignup,publicFetch) =>{
+export const signUpUser = async (credentialValues,authContext, setLoading, setSignUpSuccess, setSignUpError, setRedirectOnSignup, publicFetch) => {
     try {
         setLoading(true)
         const { data } = await publicFetch.put('signup', credentialValues)
@@ -19,16 +18,20 @@ export const signUpUser = async(credentialValues,setLoading,setSignUpSuccess,set
     }
 }
 
-export const signInUser = async (credentials,setLoading,setSigninSuccess,setSigninError,setredirectOnSignin,publicFetch) =>{
+export const signInUser = async (credentials,authContext, setLoading, setSigninSuccess, setSigninError, setredirectOnSignin, publicFetch) => {
     try {
-        await loginUserFromAuth(credentials)
-        setSigninSuccess('Login Success')
+        setLoading(true)
+        const { data } = await publicFetch.post('signin', credentials)
+        authContext.setAuthState(data)
+        setSigninSuccess(data.message)
         setSigninError('')
         setTimeout(() => {
-            // setredirectOnSignin(true)
-        }, 1000)
+            setredirectOnSignin(true)
+        }, 700)
+        setLoading(false)
     } catch (error) {
-        const { message } = error
+        setLoading(false)
+        const { message } = error.response.data
         setSigninError(message)
         setSigninSuccess('')
     }

@@ -16,11 +16,12 @@ const TableRow = ({ item,setOrders ,setEditModalOpen,setEditOrder}) => {
 
     const handleDelete = async() =>{
         try {
-            deleteOrder(authContext,setOrders,item._id)
+            deleteOrder(authContext,setOrders,item._id,fetchContext.authAxios)
         } catch (error) {
             console.log(error)
         }
     }
+
     const handleEdit = () =>{
         setEditModalOpen(true)
         setEditOrder(item)

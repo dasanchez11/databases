@@ -1,4 +1,4 @@
-import React, { createContext } from 'react';
+import React, { createContext ,useEffect} from 'react';
 import axios from 'axios';
 
 
@@ -10,12 +10,20 @@ export const FetchContext = createContext({
 
 const FetchProvider = ({ children }) => {
   const authAxios = axios.create({
-    baseURL: '/order/'
+    baseURL: '/app/'
   })
   
   const publicAxios = axios.create({
     baseURL: '/authenticate/'
   })
+
+  useEffect(()=>{
+    const getCsrfToken = async() =>{
+      const {data} = await authAxios.get('/csrf-token');
+      authAxios.defaults.headers['X-CSRF-Token'] = data.csrfToken
+    }
+    getCsrfToken();
+  },[authAxios])
   
 
 

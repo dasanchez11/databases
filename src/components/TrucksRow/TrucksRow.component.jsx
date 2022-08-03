@@ -1,14 +1,21 @@
 import React from 'react'
+import { useContext } from 'react'
 import { AiOutlineEdit } from 'react-icons/ai'
 import { HiOutlineTrash } from 'react-icons/hi'
 import { deleteTruck } from '../../util/truck.utils'
+import {AuthContext} from '../../context/AuthContext'
+import {FetchContext} from '../../context/FetchContext'
+
+
 
 const TrucksRow = ({item,setTrucks ,setEditModalOpen,setEditTruck}) => {
-    // const authContext = useContext(AuthContext)
+    const authContext = useContext(AuthContext)
+    const fetchContext = useContext(FetchContext)
+    const {setLoading} = authContext
 
     const handleDelete = async () => {
         try {
-            deleteTruck(item._id,setTrucks)
+            deleteTruck(item._id,setTrucks,fetchContext.authAxios,setLoading)
         } catch (error) {
             console.log(error)
         }
@@ -21,7 +28,7 @@ const TrucksRow = ({item,setTrucks ,setEditModalOpen,setEditTruck}) => {
 
     return (
         <tr>
-            <td className='text-base border text-center border-blue-900 '>{item._id}</td>
+            <td className='text-base border text-center border-blue-900 '>{item.truckId}</td>
             <td className='text-base border text-center border-blue-900 '>{item.status}</td>
             <td className='text-base border text-center border-blue-900 '> {item.capacity}</td>
             <td className='text-base border text-center border-blue-900 '>{item.model}</td>

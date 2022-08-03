@@ -8,6 +8,7 @@ import { AuthContext } from '../../context/AuthContext'
 import TextFieldSelect from '../TextFieldSelect/TextFieldSelect.component'
 import { createDiscount, createOrder, editOrder } from '../../util/orders.utils'
 import { transportTypes, statusTypes, availableClients } from '../../util/dropdowns.utils'
+import { FetchContext } from '../../context/FetchContext'
 
 const transportOptions = transportTypes()
 const statusOptions = statusTypes()
@@ -17,6 +18,7 @@ const statusOptions = statusTypes()
 const EditOrder = ({ orderToEdit, setOrders, onClose }) => {
     const [isTransportType, setIsTransportType] = useState('')
     const authContext = useContext(AuthContext)
+    const fetchContext = useContext(FetchContext)
     const {isAdmin} = authContext
     const [discount, setDiscount] = useState(0)
     const validate = Yup.object({
@@ -72,11 +74,6 @@ const EditOrder = ({ orderToEdit, setOrders, onClose }) => {
         }
     }, [orderToEdit,authContext.authState.clientInfo._id,isAdmin])
 
-    // const newOrder = orderToEdit === ''
-
-    // const initialValues = newOrder ?  : 
-    // { ...orderToEdit }
-
     const submitCredentials = (values) => {
 
         const deliveryDiscount = createDiscount(values)
@@ -85,7 +82,7 @@ const EditOrder = ({ orderToEdit, setOrders, onClose }) => {
             if (newOrder) {
                 createOrder(values, deliveryDiscount, authContext, setOrders)
             } else {
-                editOrder(values, setOrders, authContext)
+                editOrder(values, setOrders, authContext,fetchContext.authAxios)
             }
             onClose()
         } catch (error) {

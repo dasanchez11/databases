@@ -1,14 +1,17 @@
 import { v4 as uuidv4 } from 'uuid';
-import { createOrderFirebase, deleteOrderFirebase, editOrderFirebase } from '../Firebase/firebase.orders';
+import { createOrderFirebase } from '../Firebase/firebase.orders';
 
-export const deleteOrder = async (authContext, setOrders, itemId) => {
+export const deleteOrder = async (authContext, setOrders, itemId,authAxios) => {
+  const {setLoading} = authContext
   try {
-    const clientId = authContext.authState.clientInfo._id
-    await deleteOrderFirebase(itemId,clientId)
+    setLoading(true)
+    await authAxios.delete(`order/delete-order/${itemId}`)
     authContext.authState.clientInfo.clientOrders = authContext.authState.clientInfo.clientOrders.filter(order => order !== itemId)
     authContext.setAuthState({...authContext.authState})
     setOrders(orders => orders.filter(order => order._id !== itemId))
+    setLoading(false)
   } catch (error) {
+    setLoading(false)
     console.log(error)
   }
 }
@@ -48,6 +51,7 @@ export const createOrder = async(vals, deliveryDiscount, authContext, setOrders)
   setOrders(orders => [...orders, values] )
 }
 
+
 const returnFields = (vals,deliveryDiscount) =>{
   const {fleetNumber,portDelivery,transportType,...otherVals} = vals
   let values
@@ -78,15 +82,15 @@ const returnFieldsPlain = (vals) =>{
 
 
 
-export const editOrder = async (editOrder,setOrders,authContext) =>{
+export const editOrder = async (editOrder,setOrders,authContext,authAxios) =>{
+  const {setLoading} = authContext
   try {
-    const {setLoading} = authContext
     const {_id} = editOrder
     const deliveryDiscount = createDiscount(editOrder)
     editOrder = {...editOrder,deliveryDiscount}
     editOrder = returnFieldsPlain(editOrder)
     setLoading(true)
-    await editOrderFirebase(_id,editOrder)
+    await authAxios.patch(`order/edit-order/${_id}`,{itemsToEdit:editOrder})
     setOrders(orders =>{
       const orderId = orders.findIndex((ord) => ord._id===_id)
       orders[orderId] = editOrder
@@ -94,6 +98,23 @@ export const editOrder = async (editOrder,setOrders,authContext) =>{
     })
     setLoading(false)
   } catch (error) {
+    setLoading(false)
     console.log(error)
   }
+}
+
+
+export const getAllOrders = async(setLoading, authAxios, setPageCount, setItemsPerPage,setOrders,setCount,page) =>{
+  try {
+    setLoading(true)     
+    const {data} = await authAxios.get(`order/get-all-orders?page=${page}`)
+    setLoading(false)
+    setPageCount(data.pagination.pageCount)
+    setItemsPerPage(data.pagination.itemsPerPage)
+    setOrders(data.orders)
+    setCount(data.pagination.count)
+} catch (error) {
+    console.log(error)
+    setLoading(false)
+}
 }

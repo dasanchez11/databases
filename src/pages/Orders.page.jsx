@@ -7,7 +7,8 @@ import Modal from '../components/Modal/Modal.component'
 import Pagination from '../components/Pagination/Pagination.component'
 import TableRow from '../components/TableRow/TableRow.component'
 import { AuthContext } from '../context/AuthContext'
-import { getAllOrdersFirebase } from '../Firebase/firebase.orders'
+import { FetchContext } from '../context/FetchContext'
+import { getAllOrders } from '../util/orders.utils'
 
 
 
@@ -21,27 +22,15 @@ const Orders = () => {
     const [editModalOpen,setEditModalOpen] = useState(false)
     const [editOrder,setEditOrder] = useState('')
     const authContext = useContext(AuthContext)
-    const {setLoading,isAdmin} = authContext
-    const {_id} = authContext.authState.clientInfo
+    const fetchContext = useContext(FetchContext)
+    const {setLoading} = authContext
 
     useEffect(()=>{
-        const getData = async() =>{
-            try {
-                setLoading(true)     
-                const result = await getAllOrdersFirebase(isAdmin,_id)
-                setLoading(false)
-                setPageCount(1)
-                setItemsPerPage(10)
-                setOrders(result)
-                setCount(12)
-                
-            } catch (error) {
-                console.log(error)
-                setLoading(false)
-            }
+        const getData = () =>{
+            getAllOrders(setLoading,fetchContext.authAxios,setPageCount,setItemsPerPage,setOrders,setCount,page)
         }
         getData()
-    },[page,isAdmin,_id,setLoading])
+    },[page,setLoading,fetchContext.authAxios])
 
 
     const handleNewOrderClick = () =>{

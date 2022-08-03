@@ -3,8 +3,6 @@ import { BsChevronLeft, BsChevronRight } from 'react-icons/bs'
 
 const Pagination = ({ page, setPage, pageCount, count, itemsPerPage }) => {
 
-    console.log(count)
-
     const next = () => {
         setPage(state => {
             if (state === pageCount) {

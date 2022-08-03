@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState,useCallback } from 'react';
+import React, { createContext, useState,useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -15,22 +15,22 @@ export const AuthContext = createContext({
 
 const AuthProvider = ({ children }) => {
   const navigate = useNavigate()
-  const userInfo = localStorage.getItem('userInfo');
+  const clientInfo = localStorage.getItem('clientInfo');
   const expiresAt = localStorage.getItem('expiresAt');
 
   const [loading,setLoading] = useState(false)
   const [authState, setAuthState] = useState({
     token:null,
     expiresAt,
-    userInfo: userInfo ? JSON.parse(userInfo) : {}
+    clientInfo: clientInfo ? JSON.parse(clientInfo) : {}
   });
 
   
-  const setAuthInfo = ({ token, userInfo, expiresAt }) => {
-    localStorage.setItem('userInfo', JSON.stringify(userInfo))
+  const setAuthInfo = ({ token, clientInfo, expiresAt }) => {
+    localStorage.setItem('clientInfo', JSON.stringify(clientInfo))
     localStorage.setItem('expiresAt', expiresAt)
 
-    setAuthState({ token, userInfo, expiresAt })
+    setAuthState({ token, clientInfo, expiresAt })
   }
 
   const isAuthenticated = useCallback(() =>{
@@ -45,11 +45,11 @@ const AuthProvider = ({ children }) => {
   },[authState])
 
   const logout = () =>{
-    localStorage.removeItem('userInfo')
+    localStorage.removeItem('clientInfo')
     localStorage.removeItem('expiresAt')
     setAuthState({
       token:null,
-      userInfo:{},
+      clientInfo:{},
       expiresAt:null
     })
     navigate('/')

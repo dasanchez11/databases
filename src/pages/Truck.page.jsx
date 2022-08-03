@@ -5,14 +5,16 @@ import Modal from '../components/Modal/Modal.component'
 import Pagination from '../components/Pagination/Pagination.component'
 import { useContext } from 'react'
 import { AuthContext } from '../context/AuthContext'
-import { getAllTrucksFirebase } from '../Firebase/firebase.trucks'
+import { FetchContext } from '../context/FetchContext'
 import TrucksRow from '../components/TrucksRow/TrucksRow.component'
 import EditTruck from '../components/EditTruck/EditTruck.component'
+import { getAllTrucks } from '../util/truck.utils'
 
 
 
 const Truck = () => {
     const authContext = useContext(AuthContext)
+    const fetchContext = useContext(FetchContext)
     const [trucks,setTrucks] = useState([])
     const [editTrucks,setEditTrucks] = useState('')
     const {setLoading} = authContext
@@ -26,22 +28,10 @@ const Truck = () => {
     
     useEffect(() => {
         const getData = async () => {
-            try {
-                setLoading(true)
-                const result = await getAllTrucksFirebase()
-                setPageCount(1)
-                setItemsPerPage(10)
-                setTrucks(result)
-                setCount(12)
-                setLoading(false)
-
-            } catch (error) {
-                console.log(error)
-                setLoading(false)
-            }
+            getAllTrucks(setLoading,fetchContext.authAxios,setPageCount,setItemsPerPage,setTrucks,setCount,page)
         }
         getData()
-    }, [page,setLoading])
+    }, [page,setLoading,fetchContext.authAxios])
 
 
     const handleNewtrackClick = () =>{

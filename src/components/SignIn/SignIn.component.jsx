@@ -29,8 +29,10 @@ const SignIn = () => {
     const handleRegister = () => {
         navigate('/signup')
     }
+
+
     const submitCredentials = async (credentials) => {
-        signInUser(credentials,setLoading,setSigninSuccess,setSigninError,setLoading,setredirectOnSignin,publicFetch)
+        signInUser(credentials,authContext,setLoading,setSigninSuccess,setSigninError,setredirectOnSignin,publicFetch)
     }
 
 

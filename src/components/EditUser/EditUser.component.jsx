@@ -1,11 +1,18 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState,useEffect, useContext } from 'react'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import CustomButton from '../CustomButton/CustomButton.component'
 import TextFieldEditCreate from '../TextFieldEditCreate/TextFieldEditCreate.component'
 import { editUser } from '../../util/users.utils'
+import {FetchContext} from '../../context/FetchContext'
+import {AuthContext} from '../../context/AuthContext'
+
 
 const EditUser = ({ userToEdit, setUsers, onClose }) => {
+    const authContext = useContext(AuthContext)
+    const fetchContext = useContext(FetchContext)
+    const {setLoading} = authContext
+
     const validate = Yup.object({
         _id: Yup.string().required('Required'),
         clientEmail: Yup.string().email().required('Required'),
@@ -38,9 +45,8 @@ const EditUser = ({ userToEdit, setUsers, onClose }) => {
 
     const submitCredentials = (values) =>{
         try {
-            editUser(values, setUsers)
+            editUser(values,setUsers,fetchContext.authAxios,setLoading)
             onClose()
-
         } catch (error) {
             console.log(error)
         }

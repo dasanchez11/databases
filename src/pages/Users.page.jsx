@@ -2,15 +2,17 @@ import React, { useState } from 'react'
 import Modal from '../components/Modal/Modal.component'
 
 import { useEffect } from 'react'
-import { getAllUsersFirebase } from '../Firebase/firebase.users'
 import UserRow from '../components/UserRow/UserRow.component'
 import { useContext } from 'react'
 import { AuthContext } from '../context/AuthContext'
+import {FetchContext} from '../context/FetchContext'
 import EditUser from '../components/EditUser/EditUser.component'
 import Pagination from '../components/Pagination/Pagination.component'
+import { getAllUsers } from '../util/users.utils'
 
 const Users = () => {
     const authContext = useContext(AuthContext)
+    const fetchContext = useContext(FetchContext)
     const [editModalOpen, setEditModalOpen] = useState(false)
     const [editUser, setEditUser] = useState('')
     const {setLoading} = authContext
@@ -24,22 +26,10 @@ const Users = () => {
 
     useEffect(() => {
         const getData = async () => {
-            try {
-                setLoading(true)
-                const result = await getAllUsersFirebase()
-                setPageCount(1)
-                setItemsPerPage(10)
-                setUsers(result)
-                setCount(12)
-                setLoading(false)
-
-            } catch (error) {
-                console.log(error)
-                setLoading(false)
-            }
+            getAllUsers(fetchContext.authAxios,setLoading,setPageCount,setItemsPerPage,setUsers,setCount,page)
         }
         getData()
-    }, [page,setLoading])
+    }, [page,setLoading,fetchContext.authAxios])
 
     return (
         <div className='h-[87vh] w-[80vw] overflow-x-scroll max-h-[87vh]'>

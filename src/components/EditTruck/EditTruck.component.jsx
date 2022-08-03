@@ -8,7 +8,7 @@ import { createTruck, editTruck } from '../../util/truck.utils'
 
 const EditTruck = ({ truckToEdit, setTrucks, onClose }) => {
     const validate = Yup.object({
-        _id: Yup.string().matches(/^[a-zA-Z]{3}[0-9]{3}$/, '3 Letters,3 numbers sequece').required('Required'),
+        truckId: Yup.string().matches(/^[a-zA-Z]{3}[0-9]{3}$/, '3 Letters,3 numbers sequece').required('Required'),
         status: Yup.string().required('Required'),
         capacity: Yup.number().required('Required'),
         model: Yup.string().required('Required'),
@@ -17,7 +17,7 @@ const EditTruck = ({ truckToEdit, setTrucks, onClose }) => {
     })
     const [newOrder,setNewOrder] = useState()
     const [initialValues, setInitialValues] = useState({
-        _id: '',
+        truckId: '',
         status: '',
         capacity: '',
         model: '',
@@ -29,7 +29,6 @@ const EditTruck = ({ truckToEdit, setTrucks, onClose }) => {
     useEffect(() => {
         setNewOrder(truckToEdit === '')
         if (truckToEdit !== '') {
-            console.log(truckToEdit)
             setInitialValues(truckToEdit)
         }
     }, [truckToEdit])
@@ -59,11 +58,11 @@ const EditTruck = ({ truckToEdit, setTrucks, onClose }) => {
             (
                 <div className='fixed h-[50vh] w-[50vw] top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]'>
                     <div className='bg-white h-full w-full overflow-x-scroll '>
-                        <h1 className='text-center p-6 pb-0'>{newOrder ? 'Create' : 'Edit'} User</h1>
+                        <h1 className='text-center p-6 pb-0'>{newOrder ? 'Create' : 'Edit'} Truck</h1>
                         <Form >
                             <div className='grid grid-cols-2 gap-5 p-8'>
                                 <div>
-                                    <TextFieldEditCreate label='Vehicle ID' name='_id' type='text' />
+                                    <TextFieldEditCreate label='Vehicle ID' name='truckId' type='text' />
                                     <TextFieldEditCreate label='Status' name='status' type='text' />
                                     <TextFieldEditCreate label='Capacity' name='capacity' type='number' />
                                 </div>
@@ -74,7 +73,7 @@ const EditTruck = ({ truckToEdit, setTrucks, onClose }) => {
                                 </div>
                             </div>
                             <div className='flex flex-row justify-center'>
-                                <CustomButton type='submit' name={`${newOrder ? 'Create User' : 'Edit User'}`}>Submit</CustomButton>
+                                <CustomButton type='submit' name={`${newOrder ? 'Create Truck' : 'Edit Truck'}`}>Submit</CustomButton>
                             </div>
                         </Form>
 
