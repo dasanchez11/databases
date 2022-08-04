@@ -1,9 +1,12 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState,useEffect,useContext } from 'react'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import CustomButton from '../CustomButton/CustomButton.component'
 import TextFieldEditCreate from '../TextFieldEditCreate/TextFieldEditCreate.component'
 import { createTruck, editTruck } from '../../util/truck.utils'
+import {AuthContext} from '../../context/AuthContext'
+import {FetchContext} from '../../context/FetchContext'
+
 
 
 const EditTruck = ({ truckToEdit, setTrucks, onClose }) => {
@@ -24,7 +27,10 @@ const EditTruck = ({ truckToEdit, setTrucks, onClose }) => {
         brand: '',
         year: ''
     })
-    
+    const authContext = useContext(AuthContext)
+    const {setLoading} = authContext
+    const fetchContext = useContext(FetchContext)
+
 
     useEffect(() => {
         setNewOrder(truckToEdit === '')
@@ -36,9 +42,9 @@ const EditTruck = ({ truckToEdit, setTrucks, onClose }) => {
     const submitCredentials = (values) =>{
         try {
             if (newOrder){
-                createTruck(values,setTrucks)
+                createTruck(values,setTrucks,fetchContext.authAxios,setLoading)
             }else{
-                editTruck(values, setTrucks)
+                editTruck(values, setTrucks,fetchContext.authAxios,setLoading)
             }
             onClose()
         } catch (error) {

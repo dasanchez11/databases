@@ -4,11 +4,14 @@ import * as Yup from 'yup'
 import CustomButton from '../CustomButton/CustomButton.component'
 import TextFieldEditCreate from '../TextFieldEditCreate/TextFieldEditCreate.component'
 import { createShip, editShip } from '../../util/ships.utils'
+import { useContext } from 'react'
+import { AuthContext } from '../../context/AuthContext'
+import { FetchContext } from '../../context/FetchContext'
 
 
 const EditShip = ({ shipToEdit, setShips, onClose }) => {
     const validate = Yup.object({
-        _id: Yup.string().matches(/^[a-zA-Z]{3}[0-9]{4}[a-zA-Z]{1}$/, '3 Letters,4 numbers,1 Letter sequece').required('Required'),
+        shipId: Yup.string().matches(/^[a-zA-Z]{3}[0-9]{4}[a-zA-Z]{1}$/, '3 Letters,4 numbers,1 Letter sequece').required('Required'),
         status: Yup.string().required('Required'),
         capacity: Yup.number().required('Required'),
         model: Yup.string().required('Required'),
@@ -17,7 +20,7 @@ const EditShip = ({ shipToEdit, setShips, onClose }) => {
     })
     const [newOrder,setNewOrder] = useState()
     const [initialValues, setInitialValues] = useState({
-        _id: '',
+        shipId: '',
         status: '',
         capacity: '',
         model: '',
@@ -25,6 +28,10 @@ const EditShip = ({ shipToEdit, setShips, onClose }) => {
         year: ''
     })
     
+    const authContext = useContext(AuthContext)
+    const {setLoading} = authContext
+    const fetchContext = useContext(FetchContext)
+
 
     useEffect(() => {
         setNewOrder(shipToEdit === '')
@@ -36,9 +43,9 @@ const EditShip = ({ shipToEdit, setShips, onClose }) => {
     const submitCredentials = (values) =>{
         try {
             if (newOrder){
-                createShip(values,setShips)
+                createShip(values,setShips,fetchContext.authAxios,setLoading)
             }else{
-                editShip(values, setShips)
+                editShip(values, setShips,fetchContext.authAxios,setLoading)
             }
             onClose()
         } catch (error) {
@@ -46,6 +53,7 @@ const EditShip = ({ shipToEdit, setShips, onClose }) => {
         }
     }
 
+    
 
     return (
         <Formik
@@ -62,7 +70,7 @@ const EditShip = ({ shipToEdit, setShips, onClose }) => {
                         <Form >
                             <div className='grid grid-cols-2 gap-5 p-8'>
                                 <div>
-                                    <TextFieldEditCreate label='Vehicle ID' name='_id' type='text' />
+                                    <TextFieldEditCreate label='Vehicle ID' name='shipId' type='text' />
                                     <TextFieldEditCreate label='Status' name='status' type='text' />
                                     <TextFieldEditCreate label='Capacity' name='capacity' type='number' />
                                 </div>

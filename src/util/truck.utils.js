@@ -2,26 +2,32 @@ import { createTruckFirebase, editTruckFirebase } from "../Firebase/firebase.tru
 
 
 
-export const editTruck = async (truckInfo, setTrucks) => {
+export const editTruck = async (truckInfo, setTrucks,authAxios,setLoading) => {
     try {
-        await editTruckFirebase(truckInfo._id, truckInfo)
+        setLoading(true)
+        await authAxios.patch('truck/edit-truck',{truckInfo})
         setTrucks(trucks => {
             const truckId = trucks.findIndex((trck) => trck._id === truckInfo._id)
             trucks[truckId] = truckInfo
             return [...trucks]
         })
+        setLoading(false)
     } catch (error) {
         console.log(error)
+        setLoading(false)
     }
 }
 
-export const createTruck = async (truckInfo, setTrucks) => {
+export const createTruck = async (truckInfo, setTrucks,authAxios,setLoading) => {
     try {
-        await createTruckFirebase(truckInfo)
+        setLoading(true)
+        await authAxios.post('truck/create-truck',{truckInfo})
         setTrucks(trucks => [...trucks, truckInfo])
-
+        setLoading(false)
     } catch (error) {
         console.log(error)
+        setLoading(false)
+
     }
 }
 

@@ -1,17 +1,25 @@
 import React from 'react'
+import { useContext } from 'react'
 import { AiOutlineEdit } from 'react-icons/ai'
 import { HiOutlineTrash } from 'react-icons/hi'
 import { deleteShip } from '../../util/ships.utils'
+import {AuthContext} from '../../context/AuthContext'
+import {FetchContext} from '../../context/FetchContext'
+
 
 const ShipsRow = ({item,setShips ,setEditModalOpen,setShipToEdit}) => {
+    const authContext = useContext(AuthContext)
+    const fetchContext = useContext(FetchContext)
+    const {setLoading} = authContext
 
     const handleDelete = async () => {
         try {
-            deleteShip(item._id,setShips)
+            deleteShip(item._id,setShips,fetchContext.authAxios,setLoading)
         } catch (error) {
             console.log(error)
         }
     }
+    
     const handleEdit = () => {
         setEditModalOpen(true)
         setShipToEdit(item)
@@ -19,7 +27,7 @@ const ShipsRow = ({item,setShips ,setEditModalOpen,setShipToEdit}) => {
 
     return (
         <tr>
-            <td className='text-base border text-center border-blue-900 '>{item._id}</td>
+            <td className='text-base border text-center border-blue-900 '>{item.shipId}</td>
             <td className='text-base border text-center border-blue-900 '>{item.status}</td>
             <td className='text-base border text-center border-blue-900 '> {item.capacity}</td>
             <td className='text-base border text-center border-blue-900 '>{item.model}</td>

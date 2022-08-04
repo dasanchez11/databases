@@ -1,11 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { createOrderFirebase } from '../Firebase/firebase.orders';
 
-export const deleteOrder = async (authContext, setOrders, itemId,authAxios) => {
+export const deleteOrder = async (authContext, setOrders, itemId,clientId,authAxios) => {
   const {setLoading} = authContext
   try {
     setLoading(true)
-    await authAxios.delete(`order/delete-order/${itemId}`)
+    await authAxios.post(`order/delete-order`,{itemId,clientId})
     authContext.authState.clientInfo.clientOrders = authContext.authState.clientInfo.clientOrders.filter(order => order !== itemId)
     authContext.setAuthState({...authContext.authState})
     setOrders(orders => orders.filter(order => order._id !== itemId))
@@ -28,7 +28,7 @@ export const createDiscount = (values) => {
     return 0
 }
 
-export const createOrder = async(vals, deliveryDiscount, authContext, setOrders) => {
+export const createOrder = async(vals, deliveryDiscount, authContext, setOrders,authAxios) => {
   const {setLoading,isAdmin} = authContext
   let clientId
   if(isAdmin()){
@@ -36,19 +36,19 @@ export const createOrder = async(vals, deliveryDiscount, authContext, setOrders)
   }else{
     clientId = authContext.authState.clientInfo._id
   }
-  const orderId = uuidv4()
   let values = returnFields(vals,deliveryDiscount)
-  values = {...values,_id:orderId}
   try {
     setLoading(true)
-    await createOrderFirebase(orderId,values,clientId)
+    const {data} = await authAxios.post('order/create-order',{values})
     setLoading(false)
+    authContext.authState.clientInfo.clientOrders.push(data.orderId)
+    authContext.setAuthState({...authContext.authState})
+    setOrders(orders => [...orders, values] )
   } catch (error) {
     console.log(error)
+    setLoading(false)
+
   }
-  authContext.authState.clientInfo.clientOrders.push(orderId)
-  authContext.setAuthState({...authContext.authState})
-  setOrders(orders => [...orders, values] )
 }
 
 

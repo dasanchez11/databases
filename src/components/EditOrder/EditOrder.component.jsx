@@ -69,7 +69,8 @@ const EditOrder = ({ orderToEdit, setOrders, onClose }) => {
             setClientSelect(values.clientId)
         }else{
             if(!isAdmin()){
-                setClientSelect(authContext.authState.clientInfo._id)
+                // setClientSelect(authContext.authState.clientInfo._id)
+                setInitialValues(state=>({...state,clientId:authContext.authState.clientInfo._id}))
             }
         }
     }, [orderToEdit,authContext.authState.clientInfo._id,isAdmin])
@@ -80,7 +81,7 @@ const EditOrder = ({ orderToEdit, setOrders, onClose }) => {
         setDiscount(deliveryDiscount)
         try {
             if (newOrder) {
-                createOrder(values, deliveryDiscount, authContext, setOrders)
+                createOrder(values, deliveryDiscount, authContext, setOrders,fetchContext.authAxios)
             } else {
                 editOrder(values, setOrders, authContext,fetchContext.authAxios)
             }
@@ -97,7 +98,7 @@ const EditOrder = ({ orderToEdit, setOrders, onClose }) => {
 
     useEffect(() => {
         const getData = async () => {
-            const res = await availableClients()
+            const res = await availableClients(fetchContext.authAxios)
             setUsersOptions(res)
         }
         getData()
@@ -129,7 +130,7 @@ const EditOrder = ({ orderToEdit, setOrders, onClose }) => {
                                 </div>
                                 <div>
                                     {isAdmin() ? <TextFieldSelect value={clientSelect} label='Client' name='clientId' onInput={e => setClientSelect(e.target.value)} options={usersOptions} />:
-                                    <TextFieldEditCreate value={clientSelect} disabled label='Client' name='clientId' type='text'/>}
+                                    <TextFieldEditCreate disabled label='Client' name='clientId' type='text'/>}
                                     <TextFieldEditCreate label={`${isTransportType === 'sea' ? 'Ship ID' : 'Truck'}`} name='fleetNumber' type='text' />
                                     <TextFieldEditCreate label={`${isTransportType === 'sea' ? 'Port Delivery' : 'Warehouse'}`} name='portDelivery' type='text' />
                                     <TextFieldEditCreate label='Delivery Price' name='deliveryPrice' type='number' />

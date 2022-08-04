@@ -39,7 +39,7 @@ const SignUp = () => {
 
     const submitCredentials = async (credentials) => {
         setLoading(true)
-        signUpUser(credentials,setLoading,setSignUpSuccess,setSignUpError,setRedirectOnSignup,fetchContext.publicAxios)
+        signUpUser(credentials,authContext,setLoading,setSignUpSuccess,setSignUpError,setRedirectOnSignup,fetchContext.publicAxios)
         setLoading(false)
     }
 

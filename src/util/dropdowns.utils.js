@@ -1,4 +1,4 @@
-import { getAllUsersFirebase } from "../Firebase/firebase.users"
+import {getAllUsers} from './users.utils'
 
 export const transportTypes = () => {
     const transport = [
@@ -22,14 +22,15 @@ export const statusTypes = () => {
 }
 
 
-export const availableClients = async() => {
+export const availableClients = async(authAxios) => {
         try {
-            const users = await getAllUsersFirebase()
+            const { data } = await authAxios.get(`user/get-all-client-options`)
+            const users = data.clients
             const userOptions = [{key:undefined,value:''}]
             users.forEach(user=>{
-                const {clientEmail,_id} = user
+                const {clientName,_id} = user
                 let obj = {}
-                obj.key = clientEmail
+                obj.key = clientName
                 obj.value = _id
                 userOptions.push(obj)
             })

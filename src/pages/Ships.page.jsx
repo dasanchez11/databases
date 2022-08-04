@@ -5,9 +5,11 @@ import Modal from '../components/Modal/Modal.component'
 import Pagination from '../components/Pagination/Pagination.component'
 import { useContext } from 'react'
 import { AuthContext } from '../context/AuthContext'
-import { getAllShipsFirebase } from '../Firebase/firebase.ships'
+import { FetchContext } from '../context/FetchContext'
+
 import ShipsRow from '../components/ShipsRow/ShipsRow.component'
 import EditShip from '../components/EditShip/EditShip.component'
+import { getAllShips } from '../util/ships.utils'
 
 const Ships = () => {
     const [ships,setShips] = useState([])
@@ -26,24 +28,14 @@ const Ships = () => {
     }
 
     const authContext = useContext(AuthContext)
+    const fetchContext = useContext(FetchContext)
+
     const {setLoading} = authContext
 
 
     useEffect(() => {
         const getData = async () => {
-            try {
-                setLoading(true)
-                const result = await getAllShipsFirebase()
-                setPageCount(1)
-                setItemsPerPage(10)
-                setShips(result)
-                setCount(12)
-                setLoading(false)
-
-            } catch (error) {
-                console.log(error)
-                setLoading(false)
-            }
+            getAllShips(setLoading,fetchContext.authAxios,setPageCount,setItemsPerPage,setShips,setCount,page)
         }
         getData()
     }, [page,setLoading])
