@@ -18,7 +18,7 @@ const EditUser = ({ userToEdit, setUsers, onClose }) => {
         clientEmail: Yup.string().email().required('Required'),
         clientName: Yup.string().required('Required'),
         clientNit: Yup.number().required('Required'),
-        clientOrders: Yup.array().required('Required'),
+        clientOrders: Yup.number().required('Required'),
         clientRole: Yup.string().required('Required')
     })
     const [newOrder,setNewOrder] = useState()
@@ -37,7 +37,7 @@ const EditUser = ({ userToEdit, setUsers, onClose }) => {
         setNewOrder(userToEdit === '')
         if (userToEdit !== '') {
             let {clientOrders} = userToEdit
-            const orders = clientOrders.length
+            const orders = clientOrders
             setClientOrders(orders)
             setInitialValues(userToEdit)
         }

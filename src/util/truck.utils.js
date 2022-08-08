@@ -20,6 +20,7 @@ export const editTruck = async (truckInfo, setTrucks,authAxios,setLoading) => {
 
 export const createTruck = async (truckInfo, setTrucks,authAxios,setLoading) => {
     try {
+        truckInfo ={...truckInfo,_id:truckInfo.truckId}
         setLoading(true)
         await authAxios.post('truck/create-truck',{truckInfo})
         setTrucks(trucks => [...trucks, truckInfo])

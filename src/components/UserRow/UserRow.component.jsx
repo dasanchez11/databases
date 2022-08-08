@@ -13,7 +13,7 @@ const UserRow = ({item,setUsers ,setEditModalOpen,setEditUser}) => {
             <td className='text-base border text-center border-blue-900 '>{item.clientEmail}</td>
             <td className='text-base border text-center border-blue-900 '> {item.clientName}</td>
             <td className='text-base border text-center border-blue-900 '>{item.clientNit}</td>
-            <td className='text-base border text-center border-blue-900 '>{item.clientOrders.length}</td>
+            <td className='text-base border text-center border-blue-900 '>{item.clientOrders}</td>
             <td className='text-base border text-center border-blue-900 '>{item.clientRole}</td>
             <td className='text-base  text-center text-white '>
                 <div className='flex flex-row items-center gap-2 h-full pl-2'>

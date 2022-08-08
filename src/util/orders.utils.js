@@ -6,8 +6,8 @@ export const deleteOrder = async (authContext, setOrders, itemId,clientId,authAx
   try {
     setLoading(true)
     await authAxios.post(`order/delete-order`,{itemId,clientId})
-    authContext.authState.clientInfo.clientOrders = authContext.authState.clientInfo.clientOrders.filter(order => order !== itemId)
-    authContext.setAuthState({...authContext.authState})
+    // authContext.authState.clientInfo.clientOrders = authContext.authState.clientInfo.clientOrders.filter(order => order !== itemId)
+    // authContext.setAuthState({...authContext.authState})
     setOrders(orders => orders.filter(order => order._id !== itemId))
     setLoading(false)
   } catch (error) {
@@ -41,8 +41,8 @@ export const createOrder = async(vals, deliveryDiscount, authContext, setOrders,
     setLoading(true)
     const {data} = await authAxios.post('order/create-order',{values})
     setLoading(false)
-    authContext.authState.clientInfo.clientOrders.push(data.orderId)
-    authContext.setAuthState({...authContext.authState})
+    // authContext.authState.clientInfo.clientOrders.push(data.orderId)
+    // authContext.setAuthState({...authContext.authState})
     setOrders(orders => [...orders, values] )
   } catch (error) {
     console.log(error)

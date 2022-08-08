@@ -56,7 +56,6 @@ const AuthProvider = ({ children }) => {
   }
 
 
-
   const value = {
     authState,
     setAuthState: (authInfo) => setAuthInfo(authInfo),

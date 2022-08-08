@@ -3,7 +3,6 @@
 export const signUpUser = async (credentialValues,authContext, setLoading, setSignUpSuccess, setSignUpError, setRedirectOnSignup, publicFetch) => {
     try {
         setLoading(true)
-        console.log(publicFetch)
         const { data } = await publicFetch.put('signup', credentialValues)
         authContext.setAuthState(data)
         setSignUpSuccess(data.message)

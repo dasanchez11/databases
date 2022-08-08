@@ -19,6 +19,7 @@ export const editShip = async(shipInfo,setShips,authAxios,setLoading) =>{
 
 export const createShip = async (shipInfo,setShips,authAxios,setLoading) =>{
     try {
+        shipInfo ={...shipInfo,_id:shipInfo.shipId}
         setLoading(true)
         await authAxios.post('ship/create-ship',{shipInfo})
         setShips(ships => [...ships,shipInfo])

@@ -1,6 +1,5 @@
 
 export const editUser = async (userData, setUsers,authAxios,setLoading) => {
-    console.log(userData._id)
     try {
         await authAxios.patch(`user/edit-client/${userData._id}`,{userData})
         setUsers(users => {

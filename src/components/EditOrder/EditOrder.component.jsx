@@ -89,7 +89,7 @@ const EditOrder = ({ orderToEdit, setOrders, onClose }) => {
         } catch (error) {
             console.log(error)
 
-        }
+        } 
     }
 
     const [usersOptions, setUsersOptions] = useState([])
